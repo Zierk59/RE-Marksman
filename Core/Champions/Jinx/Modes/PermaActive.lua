@@ -7,6 +7,7 @@ function PermaActive:Execute()
 end
 
 function PermaActive:ShouldGetExecuted()
+    return true
 end
 
 function PermaActive:Draw()

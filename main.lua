@@ -32,8 +32,10 @@ function Controller:Initialize()
     -- Load base
     module.load ('REMarksman', 'Base/Models/Champion')
     module.load ('REMarksman', 'Base/Models/Mode')
-    module.load ('REMarksman', 'Base/DamageManager')
-    module.load ('REMarksman', 'Base/SpellManager')
+    module.load ('REMarksman', 'Base/Models/Spell')
+
+    -- Load common
+    module.load ('REMarksman', 'Extensions/Common')
 
     -- Load logger
     Controller.Logger = module.load ('REMarksman', 'Base/Logger')

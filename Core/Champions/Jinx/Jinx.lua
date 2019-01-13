@@ -85,28 +85,136 @@ function Jinx:Initialize()
 end
 
 function Jinx.SpellManager:Initialize()
-    Jinx.SpellManager.Q = Spell({
+    Jinx.SpellManager.Q = Spell:new({
         slot = 0,
         range = 0,
         delay = 0.25,
         speed = 0,
         radius = 0,
         collision = false,
-        from = player,
-        type = "Press",
-        dmgType = "Physical"
+        type = "press"
     })
 
-    Jinx.SpellManager.W = Spell({
+    Jinx.SpellManager.W = Spell:new({
         slot = 1,
-        range = 1500,
+        range = 1450,
         delay = 0.25,
-        speed = 0,
+        speed = 3200,
+        width = 60,
         collision = {
             hero = true,
-            minion = true
-        }
+            minion = true,
+            wall = false
+        },
+
+        type = "linear",
+        boundingRadiusMod = 0
     })
+
+    Jinx.SpellManager.E = Spell:new({
+        slot = 2,
+        radius = 900,
+        delay = 0.25,
+        speed = 0,
+        width = 100,
+        collision = {
+            hero = true,
+            minion = false,
+            wall = false
+        },
+
+        type = "circual",
+        boundingRadiusMod = 1
+    })
+
+    Jinx.SpellManager.R = Spell:new({
+        slot = 3,
+        range = 30000,
+        delay = 0.25,
+        speed = 1500,
+        width = 140,
+        collision = {
+            hero = true,
+            minion = false,
+            wall = false
+        },
+
+        type = "linear",
+        boundingRadiusMod = 0
+    })
+end
+
+function Jinx:GetFirecanonStacks()
+    if not self.HasItemFirecanon() then
+        return 0
+    end
+
+    for i = 0, player.buffManager.count - 1 do
+        local buff = player.buffManager:get(i)
+        if buff and buff.valid and buff.name == 'itemstatikshankcharge' then
+            return math.max(buff.stacks, buff.stacks2)
+        end
+    end
+
+    return 0
+end
+
+function Jinx:HasFirecanonStackedUp()
+    return self:GetFirecanonStacks() == 100
+end
+
+function Jinx:HasItemFirecanon()
+    for i = 0, 6 do
+        if player:itemID(i) == 3094 then
+            return true
+        end
+    end
+    return false
+end
+
+function Jinx:HasMinigun()
+    for i = 0, player.buffManager.count - 1 do
+        local buff = player.buffManager:get(i)
+        if buff and buff.valid and buff.name == 'jinxqicon' then
+            return true
+        end
+    end
+
+    return false
+end
+
+function Jinx:GetMinigunStacks()
+    for i = 0, player.buffManager.count - 1 do
+        local buff = player.buffManager:get(i)
+        if buff and buff.valid and buff.name == 'jinxqramp' then
+            return math.max(buff.stacks, buff.stacks2)
+        end
+    end
+
+    return 0
+end
+
+function Jinx:HasRocketLauncher()
+    return self:HasMinigun() == false
+end
+
+function Jinx:GetRealRocketLauncherRange()
+    local qRange = 700 + 25 * (self.SpellManager.Q:getInstance().level - 1)
+    local additionalRange = 0
+
+    if self:HasFirecanonStackedUp() then
+        additionalRange = math.min(qRange * 0.35, 150)
+    end
+    
+    return (qRange + additionalRange)
+end
+
+function Jinx:GetRealMinigunRange()
+    if self:HasFirecanonStackedUp() then
+        return math.min(525 * 1.35, 525 + 150)
+    end
+
+    return 525
 end
 
 return Jinx

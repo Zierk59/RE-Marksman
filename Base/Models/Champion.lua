@@ -7,7 +7,7 @@ Champion.Modes = {}
 Champion.DamageManager = nil
 
 -- Spell manager
-Champion.SpellManager = nil
+Champion.SpellManager = module.load ('REMarksman', 'Base/SpellManager')
 
 function Champion:new(e)
     e = e or {}
@@ -24,7 +24,7 @@ function Champion:Bootstrap()
 
     -- Load all modes
     for _, e in ipairs(allModes) do
-        local mode = module.load ('Core/Champions/' .. tostring(Controller.Champion) .. '/Modes/' .. e)
+        local mode = module.load ('REMarksman', 'Core/Champions/' .. player.charName .. '/Modes/' .. e)
 
         if mode ~= nil then
             self:RegisterMode(mode)
@@ -33,7 +33,7 @@ function Champion:Bootstrap()
     end
 
     -- Load spell manager
-    self.SpellManager = module.load ('Base/SpellManager')
+    -- self.SpellManager = module.load ('REMarksman', 'Base/SpellManager')
 end
 
 function Champion:Initialize()
