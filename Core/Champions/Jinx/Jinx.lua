@@ -11,7 +11,7 @@ function Jinx:Initialize()
     Controller.Menu.Combo:header("", "Zap! (W) settings :")
     Controller.Menu.Combo:boolean("UseW", "Use W", true)
     Controller.Menu.Combo:slider("WMinDistanceToTarget", "Minimum distance to target to cast", 800, 0, 1500, 50)
-    Controller.Menu.Combo.WMinDistanceToTarget:set("tooltip", "Cast W only if distance from player to target i higher than desired value.")
+    Controller.Menu.Combo.WMinDistanceToTarget:set("tooltip", "Cast W only if distance from player to target is higher than desired value.")
 
     Controller.Menu.Combo:header("", "Flame Chompers! (E) settings :")
     Controller.Menu.Combo:boolean("UseE", "Use E", true)
@@ -48,7 +48,7 @@ function Jinx:Initialize()
     Controller.Menu:menu("LaneClear", "Lane Clear")
 
     Controller.Menu.LaneClear:header("", "Basic settings :")
-    Controller.Menu.LaneClear:boolean("EnableLCIfNoEn", "Enable lane clear only if no enemies nearby", true)
+    Controller.Menu.LaneClear:boolean("EnableIfNoEnemies", "Enable lane clear only if no enemies nearby", true)
     Controller.Menu.LaneClear:slider("ScanRange", "Range to scan for enemies", 1500, 300, 2500, 50)
     Controller.Menu.LaneClear:slider("AllowedEnemies", "Allowed enemies amount", 1, 0, 5, 1)
 
@@ -98,7 +98,7 @@ function Jinx.SpellManager:Initialize()
     Jinx.SpellManager.W = Spell:new({
         slot = 1,
         range = 1450,
-        delay = 0.25,
+        delay = 0.6,
         speed = 3200,
         width = 60,
         collision = {
@@ -113,9 +113,10 @@ function Jinx.SpellManager:Initialize()
 
     Jinx.SpellManager.E = Spell:new({
         slot = 2,
-        radius = 900,
-        delay = 0.25,
-        speed = 0,
+        range = 900,
+        radius = 100,
+        delay = 0.9,
+        speed = 5000,
         width = 100,
         collision = {
             hero = true,
@@ -123,14 +124,14 @@ function Jinx.SpellManager:Initialize()
             wall = false
         },
 
-        type = "circual",
+        type = "circular",
         boundingRadiusMod = 1
     })
 
     Jinx.SpellManager.R = Spell:new({
         slot = 3,
         range = 30000,
-        delay = 0.25,
+        delay = 0.6,
         speed = 1500,
         width = 140,
         collision = {
@@ -145,7 +146,7 @@ function Jinx.SpellManager:Initialize()
 end
 
 function Jinx:GetFirecanonStacks()
-    if not self.HasItemFirecanon() then
+    if not self:HasItemFirecanon() then
         return 0
     end
 
@@ -164,28 +165,17 @@ function Jinx:HasFirecanonStackedUp()
 end
 
 function Jinx:HasItemFirecanon()
-    for i = 0, 6 do
-        if player:itemID(i) == 3094 then
-            return true
-        end
-    end
-    return false
+    return Common:HasItem(player, Common.Items.Rapid_Firecannon)
 end
 
 function Jinx:HasMinigun()
-    for i = 0, player.buffManager.count - 1 do
-        local buff = player.buffManager:get(i)
-        if buff and buff.valid and buff.name == 'jinxqicon' then
-            return true
-        end
-    end
-
-    return false
+    return Common:HasBuff(player, "jinxqicon")
 end
 
 function Jinx:GetMinigunStacks()
     for i = 0, player.buffManager.count - 1 do
         local buff = player.buffManager:get(i)
+        
         if buff and buff.valid and buff.name == 'jinxqramp' then
             return math.max(buff.stacks, buff.stacks2)
         end

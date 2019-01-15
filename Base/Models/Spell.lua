@@ -29,9 +29,9 @@ function Spell:getPrediction(target)
     local result, castPos, hitChance
     
     if self.type == "linear" then
-        result = Controller.Prediction.linear.getController.Prediction(self, target, self.from)
+        result = Controller.Prediction.linear.get_prediction(self, target, self.from)
     elseif self.type == "circular" then
-        result = Controller.Prediction.circular.getController.Prediction(self, target, self.from)
+        result = Controller.Prediction.circular.get_prediction(self, target, self.from)
     else
         result = Controller.Prediction.core.lerp(target.path, network.latency + .25, target.moveSpeed)
     end
@@ -44,7 +44,7 @@ function Spell:getPrediction(target)
             hitChance = 0
         end
 
-        if self.collision and Controller.Prediction.collision.getController.Prediction(self, result, target) then
+        if self.collision and Controller.Prediction.collision.get_prediction(self, result, target) then
             hitChance = 0
         end
     
@@ -76,7 +76,9 @@ function Spell:cast(castOn, castOn2)
 end
 
 function Spell:castToPred(target, minHitChance)
-    if not target then return end
+    if not target then 
+        return
+    end
     
     local result, predPos, hitChance = self:getPrediction(target)
 

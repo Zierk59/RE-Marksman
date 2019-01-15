@@ -5,6 +5,10 @@ function Logger:Log(context, logLevel)
         logLevel = 0
     end
 
+    if not Controller._DEBUG and logLevel == 3 then
+        return
+    end
+
     print('[' .. logLevel .. '] [' .. os.date('%Y-%m-%d %H:%M:%S', os.time()) .. '] '  .. context)
 end
 

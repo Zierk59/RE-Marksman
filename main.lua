@@ -3,6 +3,9 @@ Controller = {}
 -- Current script version
 Controller._VERSION = "0.1.123018"
 
+-- Debug mode
+Controller._DEBUG = true
+
 -- Get character name to script path entity
 Controller.Champion = ""
 
